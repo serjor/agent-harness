@@ -1,0 +1,179 @@
+<!doctype html>
+<!--
+  PRD PLAN TEMPLATE
+  Copy the <style> block verbatim. Fill the skeleton. Strip EVERY comment from the output.
+  Omit any section that genuinely does not apply — an empty section costs the reader more
+  than a missing one. Do not add sections, do not add classes, do not add JavaScript.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PLAN — TITLE</title>
+<style>
+:root{--bg:#fff;--fg:#1a1a1a;--mut:#6b7280;--line:#e2e4e8;--acc:#0b57d0;--warn:#b3261e;--sub:#f6f7f9}
+@media(prefers-color-scheme:dark){:root{--bg:#16181c;--fg:#e6e6e6;--mut:#9aa0a6;--line:#2e3138;--acc:#8ab4f8;--warn:#f2857b;--sub:#1e2127}}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:15px/1.55 ui-sans-serif,system-ui,sans-serif;max-width:52rem;margin:0 auto;padding:2.5rem 1.25rem 5rem}
+h1{font-size:1.5rem;margin:0 0 .3rem;line-height:1.25}
+h2{font-size:.85rem;text-transform:uppercase;letter-spacing:.08em;color:var(--mut);margin:2.4rem 0 .6rem;padding-bottom:.35rem;border-bottom:1px solid var(--line)}
+h3{font-size:1rem;margin:1.5rem 0 .4rem}
+p,li{margin:.35rem 0}
+ul,ol{padding-left:1.15rem}
+code{background:var(--sub);padding:.1rem .3rem;border-radius:3px;font:13px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace}
+pre{background:var(--sub);border-left:2px solid var(--acc);padding:.7rem .9rem;border-radius:4px;overflow-x:auto;line-height:1.35;font:13px/1.35 ui-monospace,SFMono-Regular,Menlo,monospace}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;margin:.6rem 0;font-size:14px}
+th,td{border:1px solid var(--line);padding:.42rem .6rem;text-align:left;vertical-align:top}
+th{background:var(--sub);font-weight:600}
+em{color:var(--mut);font-style:normal}
+strong{font-weight:600}
+.m{color:var(--mut);font-size:13px;margin:0 0 1rem}
+.x{color:var(--warn)}
+</style>
+</head>
+<body>
+
+<h1>TITLE — what ships, in six words</h1>
+<p class="m">repo · branch · YYYY-MM-DD · size: S | M | L</p>
+
+<!-- GOAL: 1–3 sentences describing the state of the world after this ships. Never the request rephrased. -->
+<h2>Goal</h2>
+<p>…</p>
+
+<!-- SCOPE: the Out list is load-bearing. It is what stops the implementation agent from "helpfully" refactoring adjacent code. -->
+<h2>Scope</h2>
+<h3>In</h3>
+<ul><li>…</li></ul>
+<h3>Out</h3>
+<ul class="x"><li>…</li></ul>
+
+<!-- CURRENT STATE: every row carries a real path:line you opened. No row without evidence. -->
+<h2>Current state</h2>
+<table>
+<tr><th>Concern</th><th>Where</th><th>Today</th></tr>
+<tr><td>…</td><td><code>path/file.ext:42</code></td><td>…</td></tr>
+</table>
+
+<!-- GAP: concrete deltas. This is what lets the implementer skip re-exploration. -->
+<h2>Gap</h2>
+<ul><li><strong>…</strong> — now: …; after: …; moves: <code>path/file.ext</code></li></ul>
+
+<!-- DECISIONS: one row per question closed with the user. The rejected alternative is the point — it stops relitigation. -->
+<h2>Decisions</h2>
+<table>
+<tr><th>Question</th><th>Decision</th><th>Why / rejected</th></tr>
+<tr><td>…</td><td>…</td><td>…</td></tr>
+</table>
+
+<!-- PLAN: phases ordered so each one leaves the repo working. "Done when" must be checkable, not vibes. -->
+<h2>Plan</h2>
+
+<h3>Phase 1 — name</h3>
+<p><em>Goal:</em> one line.</p>
+<table>
+<tr><th>File</th><th>Change</th></tr>
+<tr><td><code>path/file.ext</code></td><td>…</td></tr>
+</table>
+<pre><code>// only when the shape is not obvious from a sentence — signature, type, or diff sketch. Never a full implementation.</code></pre>
+<p><strong>Done when:</strong> …</p>
+
+<!-- DATA & CONTRACTS: omit entirely unless there is a schema, wire format, or stored-payload change. -->
+<h2>Data &amp; contracts</h2>
+<table>
+<tr><th>Change</th><th>Up</th><th>Down</th><th>Backfill</th></tr>
+<tr><td>…</td><td>…</td><td>…</td><td>…</td></tr>
+</table>
+
+<!-- RISKS: only ones that actually bite this change, each with evidence behind it. Rollback must be genuinely reversible or say so. -->
+<h2>Risks</h2>
+<table>
+<tr><th>Risk</th><th>Impact</th><th>Mitigation</th><th>Rollback</th></tr>
+<tr><td>…</td><td>…</td><td>…</td><td>…</td></tr>
+</table>
+
+<!-- VERIFICATION: exact commands. The implementer should not have to guess the test runner. -->
+<h2>Verification</h2>
+<ul>
+<li>…</li>
+</ul>
+<pre><code>test command here</code></pre>
+
+<!-- UNKNOWNS: omit if none survived. Each needs a resolution route AND a fallback. -->
+<h2>Unknowns</h2>
+<table>
+<tr><th>Unknown</th><th>How to resolve</th><th>Fallback</th></tr>
+<tr><td>…</td><td>…</td><td>…</td></tr>
+</table>
+
+<!-- DO NOT: guardrails. Short, absolute, specific to this change. -->
+<h2>Do not</h2>
+<ul class="x">
+<li>…</li>
+</ul>
+
+</body>
+</html>
+
+<!--
+=====================================================================
+WORKED FRAGMENT — the intended density. Do not copy the content.
+=====================================================================
+
+<h2>Current state</h2>
+<table>
+<tr><th>Concern</th><th>Where</th><th>Today</th></tr>
+<tr><td>Session lookup</td><td><code>api/auth/session.go:88</code></td><td>Single Redis GET on <code>sess:{id}</code>, 30-min TTL, no refresh</td></tr>
+<tr><td>Tenant scoping</td><td><code>api/db/query.go:210</code></td><td>Applied in the repository layer, bypassed by 4 raw queries (grep <code>db.Raw(</code>)</td></tr>
+</table>
+
+<h2>Gap</h2>
+<ul>
+<li><strong>Sessions survive a rotate</strong> — now: TTL reset only on login; after: sliding window on every authed request; moves: <code>api/auth/session.go</code>, <code>api/middleware/auth.go</code></li>
+</ul>
+
+<h2>Decisions</h2>
+<table>
+<tr><th>Question</th><th>Decision</th><th>Why / rejected</th></tr>
+<tr><td>Where does the sliding window live?</td><td>Middleware, after auth resolves</td><td>Keeps the store dumb. Rejected: inside the Redis wrapper — hides a write behind a read and breaks the read-replica split at <code>api/db/pool.go:34</code></td></tr>
+</table>
+
+<h2>Risks</h2>
+<table>
+<tr><th>Risk</th><th>Impact</th><th>Mitigation</th><th>Rollback</th></tr>
+<tr><td>Write on every request triples Redis ops</td><td>Latency at p99, cost</td><td>Only refresh when remaining TTL &lt; 50%</td><td>Env flag <code>SESSION_SLIDING=0</code>, no data migration to undo</td></tr>
+</table>
+
+Note the density: every claim has a path, every rejection has a reason, no sentence
+exists to introduce another sentence.
+
+---------------------------------------------------------------------
+DIAGRAMS — optional. Only when topology or time is the point. ASCII in
+<pre>, never load-bearing, always inside the section it explains.
+---------------------------------------------------------------------
+
+Expand/contract migration — several states coexist, prose handles this badly:
+
+<pre>
+ T0  old code      read col_a   write col_a
+ T1  add col_b, backfill                        &lt;- migration 0042, ~40s lock-free
+ T2  both deployed read col_a   write col_a+col_b   &lt;- rolling window, ~15 min
+ T3  new code      read col_b   write col_b
+ T4  drop col_a                                 &lt;- migration 0043, separate release
+</pre>
+
+Blast radius — four+ components, non-linear edges:
+
+<pre>
+ handler.go:88 ──► service.Sync() ──┬──► db users        (tx)
+                                    ├──► queue profile.changed
+                                    │       └──► worker/profile.go:31 ──► cache DEL sess:*
+                                    └──► search index    (async, best-effort)
+</pre>
+
+What NOT to draw — this adds nothing over an ordered list:
+
+<pre>
+ step 1 ──► step 2 ──► step 3
+</pre>
+-->
