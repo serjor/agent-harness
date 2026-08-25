@@ -1,21 +1,23 @@
 ---
 name: prd-plan
-description: Iterative PRD workflow that replaces plan mode. Investigates the real codebase, maps the gap between what exists and what is being asked for, hunts blind spots, interrogates the user until every consequential decision is closed, then emits one self-contained HTML plan that an implementation agent executes verbatim. Use this whenever the user wants to plan, scope, spec, or think through a code change before anything is written — including "plan this", "spec this out", "PRD", "how would we build X", "what would it take to", "what breaks if we", "before you code", or any feature, refactor, migration, or architectural request that is not a one-line fix. Prefer this over replying with an inline or markdown plan.
+description: Iterative PRD workflow that replaces plan mode. Investigates the real codebase, closes consequential decisions with the user, and emits one self-contained HTML plan for approval and zero-context implementation sessions. Use this whenever the user wants to plan, scope, spec, or think through a code change before anything is written — including "plan this", "spec this out", "PRD", "how would we build X", "what would it take to", "what breaks if we", "before you code", or any feature, refactor, migration, or architectural request that is not a one-line fix. Prefer this over replying with an inline or markdown plan.
 ---
 
 # PRD Plan
 
-Plan mode fails in a specific way: it guesses a plan from the request instead of deriving it from the code, then dumps markdown that the implementation agent has to re-verify from scratch. This skill inverts that. Spend the tokens on investigation and on the user, spend as few as possible on prose.
+Plan mode fails when it guesses from the request and leaves the implementation agent to verify everything again. This skill derives the plan from the code and closes decisions with the user.
 
-The user is a product manager who also ships code. Talk to them that way — no jargon translation, no explaining what a foreign key is, no hedging. When the code contradicts what they asked for, say so with the file open in front of you.
+The HTML has two equal readers. The user uses it to understand impact and approve the approach. Implementation agents use it to execute the work across sessions with no prior context.
+
+Explain the consequence before the mechanism. Use programming concepts that transfer across languages. Keep exact paths, symbols, contracts, and commands for the implementation agent. Define a repository-specific term when the decision depends on it. Do not teach basic syntax.
 
 ## Hard rules
 
 1. **Read-only on the project.** Read, grep, trace, run read-only commands. Never edit project files, never run a migration, never install a dependency. The only file ever written is the HTML plan, at a path the user approved.
 2. **Evidence or silence.** Every statement about current behaviour carries a `path:line` or symbol you actually opened. Never infer file layout from framework convention — repos lie.
-3. **No plan before convergence.** The HTML is emitted only once no open question would change its content.
+3. **No plan before convergence.** Emit the HTML only after all questions that change its content are closed.
 4. **Surface cost early.** The moment recon shows the request is materially bigger than it looks, stop and say it — before asking anything else, with the evidence and with cheaper alternatives if any exist. The user's whole reason for using this is to decide with the real price on the table.
-5. **Go to the point.** No preambles, no recaps, no "great question", no restating the request back. Facts, paths, tradeoffs.
+5. **Go to the point.** No preambles, praise, hedging, or request restatement. Give facts, paths, consequences, and tradeoffs.
 
 ## Phase 0 — Size the request
 
@@ -24,7 +26,7 @@ The size decides how much recon and how many rounds of questions. Treat the user
 | Tier | Signals | Recon | Questions |
 |---|---|---|---|
 | **S — surgical** | Contained in a handful of files, no schema change, no contract change, no new dependency | Targeted grep + read the touched functions and their tests | 0–2, one round, or none if the code answers everything |
-| **M — feature** | New surface inside existing architecture, may add tables/endpoints/config, no breaking change | Read the whole vertical slice end to end, plus one precedent feature to mirror | 3–6, one or two rounds |
+| **M — feature** | New surface inside existing architecture, can add tables/endpoints/config, no breaking change | Read the whole vertical slice end to end, plus one precedent feature to mirror | 3–6, one or two rounds |
 | **L — structural** | Schema migration, cross-cutting refactor, contract break, new dependency at the core, data backfill, auth or tenancy change | Full trace, data lifecycle, every call site, migration and rollback path, blast radius | As many rounds as it takes; do not compress this |
 
 Tier drift upward is the single most valuable output of this skill. "You asked for a field on the user profile; that field is denormalised into three read models and a cache key, so this is L not S" is worth more than any plan.
@@ -37,20 +39,20 @@ Do not ask the user anything the repo can answer. Before the first question, kno
 - **The data**: models, schema files, migrations directory, how state is persisted and read back.
 - **Precedent**: find the closest thing already implemented in this repo and mirror its shape. A plan that fights local convention gets rejected in review no matter how good it is.
 - **Tests**: what covers the affected paths today, and what does not.
-- **Ownership of the seams**: who else calls the thing being changed — grep call sites, don't assume.
+- **Ownership of the seams**: who else calls the thing being changed — grep call sites, do not assume.
 
 Language and stack are irrelevant to the method. Find the build file, find the test runner, find the entrypoint, follow the data.
 
 ## Phase 2 — Gap
 
-State origin and destination as concrete deltas, not aspirations. For each thing that must become true: what is true now (with evidence), what must be true after, and what has to move for that. This is the section that lets an implementation agent skip re-exploration, so it earns its tokens.
+State origin and destination as concrete deltas, not aspirations. For each result, describe what is true now, what must be true after, and what must move. Explain why the delta matters before you give its technical mechanism. Support the current state with evidence.
 
 ## Phase 3 — Blind spot sweep
 
 Walk this list against the change. Report only the entries that actually bite, each with evidence. Silence on the rest — a plan padded with inapplicable risk boilerplate trains the reader to skim.
 
 - **Data model**: migration up *and* down, backfill of existing rows, nullable-vs-default on a live table, index cost, lock duration on large tables.
-- **Contracts**: API/event/CLI shape changes, consumers you don't control, versioning window, serialized data already on disk or in a queue.
+- **Contracts**: API/event/CLI shape changes, consumers you do not control, versioning window, serialized data already on disk or in a queue.
 - **State in flight**: in-flight requests, queued jobs enqueued under the old schema, cron jobs, retries, idempotency.
 - **Concurrency**: new races, transaction boundaries, ordering assumptions, locks.
 - **Cache & derived data**: invalidation, cache keys embedding the old shape, search indexes, read models, materialized views.
@@ -65,7 +67,7 @@ Walk this list against the change. Report only the entries that actually bite, e
 Questions cost the user time, so each one must earn it. A question is worth asking only if different answers produce different plans.
 
 - Ask in **batches sized to the tier** (see Phase 0). Never drip-feed one question at a time on an L change and never open an S change with an interview.
-- Each question carries: what it decides, the recommended default and why, and what changes if they pick otherwise. The user should be able to reply "defaults" and get a good plan.
+- Each question carries: what it decides, the recommended default and why, and the result of another answer. The user can reply "defaults" and get a good plan.
 - Rank by consequence. Schema and contract decisions first; naming last, or not at all.
 - Never ask for information sitting in the repo. Asking "which ORM do you use" burns credibility you need later.
 - When an answer invalidates recon, go back to Phase 1 for the affected area rather than patching the plan around it.
@@ -74,58 +76,113 @@ Record every closed decision along with the rejected alternative and the reason.
 
 ## Phase 5 — Converge
 
-Loop Phases 1–4 until no open question would change the plan. Then, before writing anything, put the shape in front of the user in a few lines: tier, phases, the one or two things that could go wrong, anything left genuinely unknown. Get the go-ahead.
+Loop Phases 1–4 until all questions that change the plan are closed. Then show the user the tier, ordered phases, main risks, and genuine unknowns. Recommend whether to proceed, reduce scope, do more discovery, or stop. Give the reason. Get the go-ahead.
+
+### Build release-safe phases
+
+Phases are ordered and can depend on earlier phases. Every phase must leave the repository usable and suitable for production. A phase does not need user-visible value. A refactor, linter, internal migration, or preparatory change is valid when its production state is explicit.
+
+Each phase must contain:
+
+- Starting state and dependencies.
+- Outcome and plain-language impact. Write `None` when there is no user-visible effect.
+- Exact files, symbols, and changes.
+- Acceptance criteria and exact verification commands.
+- Deployment, observation, and rollback.
+- A production gate that proves the phase can end safely.
+
+Do not use phases as arbitrary work buckets. If a phase cannot ship safely, merge it with the next phase or redesign the boundary.
+
+### Make the plan resumable
+
+The generated HTML is a living execution record after the user approves it. Put this protocol inside every plan so an implementation agent can obey it without loading this skill.
+
+Use these phase states: `planned`, `in_progress`, `done`, and `blocked`. Only one phase can be `in_progress`. The first agent starts the first planned phase. Later agents start with the first phase that is not done.
+
+Before an agent changes project files, the plan must tell it to:
+
+1. Read the whole HTML.
+2. Examine the evidence for all done phases.
+3. Compare the recorded repository state with the current worktree.
+4. Mark the selected phase `in_progress` and record the session start.
+
+Keep the approved specification immutable. Give each phase a separate execution record with:
+
+- Start and completion time.
+- Agent or session identifier when available.
+- Actual files and symbols changed.
+- Verification commands and summarized results.
+- Commit or change reference when available.
+- Deviations and new decisions.
+- Remaining risks and exact next action.
+
+Do not paste full logs or diffs. Link or cite their durable location. Keep the latest handoff visible in the phase and the status dashboard.
+
+An agent can correct a factual reference and must record the correction. It must stop for user direction when a discovery changes scope, a contract, risk, phase boundaries, or the approved outcome. Never rewrite the approved plan to make an unapproved deviation look intentional.
+
+Mark a phase `done` only when its production gate has evidence. If the gate cannot pass, mark the phase `blocked`, record the cause, attempted alternatives, and the decision needed. Do not start a later phase while an earlier phase is active or blocked.
 
 ## Phase 6 — Emit the HTML
 
 1. Propose a path — default `docs/plans/NNNN-<slug>.html` — and ask for confirmation or an alternative. Never write without an approved path, never overwrite an existing file silently.
-2. Build the file from `references/plan-template.html`.
-3. Write it, then report the absolute path in one line. Do not summarise the plan back into chat; the file is the deliverable.
+2. Build the file from `references/plan-template.html`. Match the user's language and set the HTML `lang` attribute. Keep code, identifiers, commands, and quoted errors exact.
+3. Write it, then report the absolute path in one line. Do not duplicate the plan in chat. The file is the deliverable.
 
 ## The HTML contract
 
-The implementation agent reads this file **whole, raw, tags and all**. Markup it doesn't need is context it can't spend on the code, so the file is optimised for that reader while still being pleasant for a human to review.
+The user reads the rendered file. Implementation agents read the whole raw file, including tags. One file must serve both without duplicating facts.
 
-**Token discipline**
+### Decision layer
 
-- One `<style>` block, copied from the template, styling by element selector so the body carries almost no `class` attributes. No inline styles.
-- Zero JavaScript, zero external resources — no CDN, no web fonts, no image files, no Mermaid. One file, renders offline, prints correctly. Diagrams follow the rules below.
-- Semantic tags only — `h2`, `p`, `ul`, `table`, `code`, `pre`. No wrapper `div` scaffolding.
-- Tables for structured facts, prose for reasoning, code blocks only where the shape is not obvious from a sentence. Never paste a full implementation; a signature, a type, or a three-line diff sketch is the ceiling.
-- Budget by tier: **S ≈ 400 words, M ≈ 1200, L ≈ 2500.** Over budget means you are explaining instead of specifying. Cut restatement first, then background, then adjectives.
+Put these items first:
 
-**Diagrams** — optional, and most plans don't need one. Two rules make them safe to allow:
+- Outcome and recommendation with its reason.
+- Main cost or tradeoff.
+- Execution status and next action.
+- Impact by relevant area: behavior, code, data and contracts, operations, and developer workflow.
+- Scope, main risks, and an ordered map of phases.
 
-*Never load-bearing.* Anything a diagram shows must also exist in the prose or tables. The picture is for the human reviewing the plan; the implementation agent reads a picture worse than it reads a sentence, so a fact that only lives in a diagram is a fact that gets dropped.
+The execution dashboard must show document status, completed phase count, active or blocked phase, open decisions, last update, and exact next action.
 
-*ASCII inside `<pre>` by default.* Box-drawing characters are cheap, render offline, print, survive copy-paste into a terminal, and an agent parses them as plain text. Reach for one only when the relationship is topological or temporal and prose would cost more than the drawing:
+Write impact as consequence, reason, then technical mechanism. State `No change` for an area when that absence helps the user assess the request.
 
-- four or more components with non-linear connections between them
-- a sequence with interleaving, async hops, or retries
-- a rolling-deploy or migration timeline where several states coexist for a window
-- a before/after where the *shape* changed, not just the values
+### Execution layer
 
-Skip it when the content is a linear list of steps (that's an `<ol>`), a three-node hierarchy (that's a sentence), or anything a table already says. A diagram that restates the table below it is pure cost.
+Include only applicable sections:
 
-Hand-written inline `<svg>` is permitted only for the rare case where crossing edges make ASCII unreadable, and only kept under roughly 25 elements — beyond that the coordinate noise costs the reader more than the layout gains. Place diagrams inside the section they explain, never in a section of their own.
+- Current state with `path:line` and symbol evidence.
+- Concrete change from current state to target state.
+- Closed decisions with rejected alternatives and reasons.
+- Release-safe phase specifications.
+- Data and contract changes, compatibility, and migration when applicable.
+- Risks with signals, mitigations, and real rollback paths.
+- Exact verification commands and acceptance criteria.
+- Unknowns with a resolution route and fallback.
+- Guardrails that prevent scope creep.
+- A separate execution record for each phase.
 
-**Sections** — in this order, omitting any that genuinely does not apply:
+Keep each fact in one canonical location. The decision layer summarizes consequences. The execution layer owns mechanisms and evidence.
 
-| Section | Contents |
-|---|---|
-| Goal | 1–3 sentences: what is true when this ships. Not the request rephrased. |
-| Scope | In, and an explicit **Out** list. The Out list prevents the most common implementation agent failure: helpful scope creep. |
-| Current state | Table — concern, `path:line`, what it does today. |
-| Gap | What must become true, and what moves for it. |
-| Decisions | Table — question, decision, why + rejected alternative. |
-| Plan | Phases. Each: one-line goal, table of files and the change per file, optional signature or diff sketch, and a concrete **done when**. |
-| Data & contracts | Only if applicable: migration up/down, backfill, API shape before/after, compatibility window. |
-| Risks | Table — risk, impact, mitigation, rollback. Only real ones. |
-| Verification | Tests to add or update, exact commands to run, manual checks, acceptance criteria. |
-| Unknowns | Only if any survive: what is unresolved, how the implementer resolves it, and the fallback if they can't. |
-| Do not | Guardrails for the implementation agent: files not to touch, patterns not to introduce, refactors not to bundle in. |
+### Information density
 
-Read `references/plan-template.html` when you reach Phase 6. It holds the exact style block, the section skeleton, and a worked fragment showing the intended density. Its HTML comments are guidance — strip every one of them from the output.
+Do not use a global word limit. Keep the decision layer brief enough to scan before the implementation detail. Add detail only when it changes a decision, explains impact, prevents a failure, or prevents repository re-exploration. Remove repeated context, full logs, long diffs, tutorials, and decorative prose.
+
+Use tables for structured facts and prose for reasoning. Use code blocks only when a signature, type, command, or short diff sketch communicates the shape better. Never include a full implementation.
+
+### File constraints
+
+- Use one `<style>` block from the template. Do not use inline styles.
+- Use semantic HTML and a small stable class vocabulary from the template.
+- Use no JavaScript, event handlers, external resources, web fonts, images, CDN assets, or Mermaid.
+- Make the file work offline, on narrow screens, in dark mode, and when printed.
+- Use text labels in addition to color. Do not make information depend only on presentation.
+- Use `<details>` only for secondary evidence, rejected alternatives, or bounded history. Keep decisions, active status, production gates, and next actions visible.
+
+### Diagrams
+
+Diagrams are optional and never load-bearing. Use ASCII inside `<pre>` when topology or time is harder to understand in prose. Skip linear sequences and any diagram that repeats a table. Inline SVG is permitted only when crossing edges make ASCII unreadable and the SVG remains small.
+
+Read `references/plan-template.html` when you reach Phase 6. It contains the exact style block, structure, and field guidance. Strip all HTML comments from generated plans.
 
 ## Greenfield
 

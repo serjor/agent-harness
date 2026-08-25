@@ -1,179 +1,400 @@
 <!doctype html>
 <!--
   PRD PLAN TEMPLATE
-  Copy the <style> block verbatim. Fill the skeleton. Strip EVERY comment from the output.
-  Omit any section that genuinely does not apply — an empty section costs the reader more
-  than a missing one. Do not add sections, do not add classes, do not add JavaScript.
+  Replace placeholders and repeat phase/impact blocks as needed.
+  Omit sections that do not apply. Strip every HTML comment from generated plans.
+  Keep approved specifications separate from execution records.
 -->
-<html lang="en">
+<html lang="LANG">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>PLAN — TITLE</title>
+<meta name="color-scheme" content="light dark">
+<title>Plan — TITLE</title>
 <style>
-:root{--bg:#fff;--fg:#1a1a1a;--mut:#6b7280;--line:#e2e4e8;--acc:#0b57d0;--warn:#b3261e;--sub:#f6f7f9}
-@media(prefers-color-scheme:dark){:root{--bg:#16181c;--fg:#e6e6e6;--mut:#9aa0a6;--line:#2e3138;--acc:#8ab4f8;--warn:#f2857b;--sub:#1e2127}}
+:root{
+  --bg:#f4f6f9;--surface:#fff;--surface-2:#f8fafc;--text:#172033;--muted:#667085;
+  --line:#dce2ea;--accent:#3157d5;--accent-soft:#edf1ff;--good:#16734b;
+  --good-soft:#e9f7f0;--warn:#9a6700;--warn-soft:#fff6d8;--danger:#b42318;
+  --danger-soft:#fff0ee;--code:#eef1f5;--shadow:0 12px 35px rgba(23,32,51,.08)
+}
+@media(prefers-color-scheme:dark){
+  :root{
+    --bg:#10141d;--surface:#171d28;--surface-2:#1d2532;--text:#edf1f7;--muted:#a6b0c0;
+    --line:#303a49;--accent:#91a7ff;--accent-soft:#222d57;--good:#70d6aa;
+    --good-soft:#15382c;--warn:#f0c46b;--warn-soft:#3c3015;--danger:#ff9b91;
+    --danger-soft:#49231f;--code:#242d3a;--shadow:0 14px 38px rgba(0,0,0,.22)
+  }
+}
 *{box-sizing:border-box}
-body{background:var(--bg);color:var(--fg);font:15px/1.55 ui-sans-serif,system-ui,sans-serif;max-width:52rem;margin:0 auto;padding:2.5rem 1.25rem 5rem}
-h1{font-size:1.5rem;margin:0 0 .3rem;line-height:1.25}
-h2{font-size:.85rem;text-transform:uppercase;letter-spacing:.08em;color:var(--mut);margin:2.4rem 0 .6rem;padding-bottom:.35rem;border-bottom:1px solid var(--line)}
-h3{font-size:1rem;margin:1.5rem 0 .4rem}
-p,li{margin:.35rem 0}
-ul,ol{padding-left:1.15rem}
-code{background:var(--sub);padding:.1rem .3rem;border-radius:3px;font:13px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace}
-pre{background:var(--sub);border-left:2px solid var(--acc);padding:.7rem .9rem;border-radius:4px;overflow-x:auto;line-height:1.35;font:13px/1.35 ui-monospace,SFMono-Regular,Menlo,monospace}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.58 ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow-x:clip}
+main{width:100%;max-width:74rem;min-width:0;margin:0 auto;padding:2rem 1.25rem 5rem}
+a{color:var(--accent);text-decoration-thickness:.08em;text-underline-offset:.18em}
+a:hover{text-decoration-thickness:.14em}
+a:focus-visible,summary:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:3px}
+header,section,.phase{min-width:0;background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow)}
+header{padding:2rem}
+section{padding:1.5rem;margin-top:1rem}
+.phase{padding:0;margin-top:1rem;overflow:hidden}
+.eyebrow{margin:0 0 .45rem;color:var(--accent);font-size:.76rem;font-weight:750;letter-spacing:.1em;text-transform:uppercase}
+h1{font-size:clamp(1.85rem,5vw,3.15rem);line-height:1.08;letter-spacing:-.035em;margin:.15rem 0 .8rem;max-width:18ch}
+h2{font-size:1.32rem;line-height:1.25;margin:0 0 .85rem;letter-spacing:-.015em}
+h3{font-size:1.03rem;line-height:1.3;margin:0 0 .45rem}
+h4{font-size:.92rem;line-height:1.35;margin:0 0 .35rem}
+p{margin:.4rem 0}
+ul,ol{margin:.55rem 0;padding-left:1.2rem}
+li{margin:.3rem 0}
+.lede{max-width:68ch;font-size:1.07rem;color:var(--muted);margin:0}
+.meta,.stat-grid,.decision-grid,.impact-grid,.phase-facts,.triptych{display:grid;gap:.75rem}
+.meta{grid-template-columns:repeat(4,minmax(0,1fr));margin-top:1.4rem}
+.meta div,.stat,.decision,.impact,.fact,.triptych article{background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:.8rem .9rem}
+dt,.label{color:var(--muted);font-size:.72rem;font-weight:750;letter-spacing:.06em;text-transform:uppercase}
+dd{margin:.18rem 0 0;font-weight:650}
+.status{display:inline-flex;align-items:center;gap:.35rem;border:1px solid currentColor;border-radius:999px;padding:.15rem .52rem;font-size:.75rem;font-weight:750;white-space:nowrap}
+.status::before{content:"";width:.42rem;height:.42rem;border-radius:50%;background:currentColor}
+.review{color:var(--warn);background:var(--warn-soft)}
+.planned{color:var(--accent);background:var(--accent-soft)}
+.active{color:var(--warn);background:var(--warn-soft)}
+.done{color:var(--good);background:var(--good-soft)}
+.blocked{color:var(--danger);background:var(--danger-soft)}
+nav{position:sticky;top:.7rem;z-index:2;max-width:74rem;margin:1rem auto;padding:.7rem .9rem;background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow)}
+nav ul{display:flex;gap:.4rem .95rem;list-style:none;margin:0;padding:0;overflow-x:auto}
+nav li{margin:0;white-space:nowrap}
+nav a{color:var(--muted);font-size:.84rem;font-weight:650;text-decoration:none}
+nav a:hover{color:var(--accent)}
+.decision-grid{grid-template-columns:1.2fr .8fr;margin-top:1rem}
+.decision{padding:1rem}
+.decision.primary{background:var(--accent-soft);border-color:var(--accent)}
+.decision strong{display:block;font-size:1.18rem;margin:.15rem 0 .35rem}
+.decision p,.impact p{color:var(--muted)}
+.callout{border-left:4px solid var(--accent);border-radius:8px;background:var(--accent-soft);padding:.85rem 1rem;margin-top:1rem}
+.callout.warning{border-color:var(--warn);background:var(--warn-soft)}
+.stat-grid{grid-template-columns:repeat(4,minmax(0,1fr));margin:.8rem 0}
+.stat strong{display:block;font-size:1.08rem;margin-top:.2rem}
+.next-action{display:flex;gap:.7rem;align-items:flex-start;margin-top:.8rem}
+.next-action strong{white-space:nowrap}
+.impact-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.impact{padding:1rem}
+.impact h3{display:flex;align-items:center;justify-content:space-between;gap:.5rem}
+.no-change{color:var(--good);font-size:.75rem;font-weight:750;text-transform:uppercase}
+.scope-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.out{border-left:3px solid var(--danger);padding-left:1rem}
+table{border-collapse:separate;border-spacing:0;width:100%;max-width:100%;display:block;overflow-x:auto;margin:.65rem 0}
+thead,tbody{display:table;width:100%;table-layout:fixed}
+th,td{border-bottom:1px solid var(--line);padding:.62rem .7rem;text-align:left;vertical-align:top}
+th{background:var(--surface-2);color:var(--muted);font-size:.73rem;letter-spacing:.05em;text-transform:uppercase}
+tr:last-child td{border-bottom:0}
+code{background:var(--code);border-radius:4px;padding:.1rem .32rem;font:13px/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+pre{background:var(--code);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:8px;padding:.8rem 1rem;overflow-x:auto;font:13px/1.45 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
 pre code{background:none;padding:0}
-table{border-collapse:collapse;width:100%;margin:.6rem 0;font-size:14px}
-th,td{border:1px solid var(--line);padding:.42rem .6rem;text-align:left;vertical-align:top}
-th{background:var(--sub);font-weight:600}
-em{color:var(--mut);font-style:normal}
-strong{font-weight:600}
-.m{color:var(--mut);font-size:13px;margin:0 0 1rem}
-.x{color:var(--warn)}
+details{border-top:1px solid var(--line);margin-top:.9rem;padding-top:.8rem}
+summary{cursor:pointer;color:var(--accent);font-weight:700}
+summary::marker{color:var(--accent)}
+.phase-header{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;padding:1.25rem 1.4rem;background:var(--surface-2);border-bottom:1px solid var(--line)}
+.phase-number{color:var(--muted);font-size:.76rem;font-weight:750;letter-spacing:.07em;text-transform:uppercase}
+.phase-header h3{font-size:1.2rem;margin:.12rem 0 0}
+.phase-body{padding:1.3rem 1.4rem}
+.phase-facts{grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:1rem}
+.fact{padding:.7rem .8rem}
+.fact strong{display:block;margin-top:.18rem}
+.plain-impact{font-size:1.02rem;margin:.85rem 0 1rem}
+.change-list td:first-child{width:30%}
+.gate{border:1px solid var(--good);background:var(--good-soft);border-radius:9px;padding:.85rem 1rem;margin:1rem 0}
+.gate h4{color:var(--good)}
+.triptych{grid-template-columns:repeat(3,minmax(0,1fr))}
+.triptych article{padding:.85rem}
+.execution-record{background:var(--surface-2);border-radius:9px;padding:0 .9rem .8rem}
+.execution-record dl{display:grid;grid-template-columns:9rem 1fr;gap:.45rem .8rem;margin:.75rem 0 0}
+.execution-record dd{font-weight:400;color:var(--muted)}
+.muted{color:var(--muted)}
+.risk-high{color:var(--danger);font-weight:750}
+.risk-med{color:var(--warn);font-weight:750}
+.checks{list-style:none;padding:0}
+.checks li{position:relative;padding-left:1.55rem}
+.checks li::before{content:"□";position:absolute;left:.1rem;color:var(--accent);font-weight:800}
+.guardrails{border-left:4px solid var(--danger)}
+footer{max-width:74rem;margin:1rem auto 0;color:var(--muted);font-size:.8rem;text-align:center}
+@media(max-width:760px){
+  main{padding:1rem .75rem 3rem}
+  header,section{padding:1.15rem}
+  .meta,.stat-grid,.decision-grid,.impact-grid,.scope-grid,.phase-facts,.triptych{grid-template-columns:1fr}
+  nav{top:0;margin:.6rem .75rem;border-radius:9px}
+  .phase-header{padding:1rem;flex-direction:column}
+  .phase-body{padding:1rem}
+  .execution-record dl{grid-template-columns:1fr;gap:.1rem}
+  thead,tbody{min-width:42rem}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+@media print{
+  :root{--bg:#fff;--surface:#fff;--surface-2:#f5f5f5;--text:#111;--muted:#555;--line:#ccc;--shadow:none}
+  body{font-size:10pt}
+  main{max-width:none;padding:0}
+  nav{display:none}
+  header,section,.phase{box-shadow:none;break-inside:avoid}
+  .phase{break-before:page}
+  details{display:block}
+  details>*{display:block}
+  summary{display:none}
+  a{color:inherit;text-decoration:none}
+}
 </style>
 </head>
 <body>
+<main>
 
-<h1>TITLE — what ships, in six words</h1>
-<p class="m">repo · branch · YYYY-MM-DD · size: S | M | L</p>
+<!-- DECISION LAYER: keep this first screen useful without file-level detail. -->
+<header id="summary">
+  <p class="eyebrow">Change plan · Size S | M | L</p>
+  <h1>TITLE — outcome, not request</h1>
+  <p class="lede">One or two plain-language sentences that describe what becomes true.</p>
 
-<!-- GOAL: 1–3 sentences describing the state of the world after this ships. Never the request rephrased. -->
-<h2>Goal</h2>
-<p>…</p>
+  <dl class="meta">
+    <div><dt>Repository</dt><dd><code>repo</code></dd></div>
+    <div><dt>Branch</dt><dd><code>branch</code></dd></div>
+    <div><dt>Updated</dt><dd>YYYY-MM-DD</dd></div>
+    <div><dt>Status</dt><dd><span class="status review">Awaiting approval</span></dd></div>
+  </dl>
 
-<!-- SCOPE: the Out list is load-bearing. It is what stops the implementation agent from "helpfully" refactoring adjacent code. -->
-<h2>Scope</h2>
-<h3>In</h3>
-<ul><li>…</li></ul>
-<h3>Out</h3>
-<ul class="x"><li>…</li></ul>
+  <div class="decision-grid">
+    <article class="decision primary">
+      <span class="label">Recommendation</span>
+      <strong>Proceed | Reduce scope | More discovery | Stop</strong>
+      <p>Main reason supported by the investigation.</p>
+    </article>
+    <article class="decision">
+      <span class="label">Main tradeoff</span>
+      <strong>Short description</strong>
+      <p>What the user accepts by choosing the recommendation.</p>
+    </article>
+  </div>
 
-<!-- CURRENT STATE: every row carries a real path:line you opened. No row without evidence. -->
-<h2>Current state</h2>
-<table>
-<tr><th>Concern</th><th>Where</th><th>Today</th></tr>
-<tr><td>…</td><td><code>path/file.ext:42</code></td><td>…</td></tr>
-</table>
+  <aside class="callout"><strong>Expected result.</strong> Observable final outcome.</aside>
+</header>
 
-<!-- GAP: concrete deltas. This is what lets the implementer skip re-exploration. -->
-<h2>Gap</h2>
-<ul><li><strong>…</strong> — now: …; after: …; moves: <code>path/file.ext</code></li></ul>
+<nav aria-label="Plan contents">
+  <ul>
+    <li><a href="#execution-status">Status</a></li>
+    <li><a href="#impact">Impact</a></li>
+    <li><a href="#scope">Scope</a></li>
+    <li><a href="#change">Change</a></li>
+    <li><a href="#decisions">Decisions</a></li>
+    <li><a href="#phases">Phases</a></li>
+    <li><a href="#risks">Risks</a></li>
+    <li><a href="#verification">Verification</a></li>
+  </ul>
+</nav>
 
-<!-- DECISIONS: one row per question closed with the user. The rejected alternative is the point — it stops relitigation. -->
-<h2>Decisions</h2>
-<table>
-<tr><th>Question</th><th>Decision</th><th>Why / rejected</th></tr>
-<tr><td>…</td><td>…</td><td>…</td></tr>
-</table>
+<!-- Update after every phase transition. Only one phase can be active. -->
+<section id="execution-status">
+  <p class="eyebrow">Living document</p>
+  <h2>Execution status</h2>
+  <div class="stat-grid">
+    <article class="stat"><span class="label">Progress</span><strong>0 of N phases</strong></article>
+    <article class="stat"><span class="label">Active phase</span><strong>None</strong></article>
+    <article class="stat"><span class="label">Blockers</span><strong>0</strong></article>
+    <article class="stat"><span class="label">Open decisions</span><strong>0</strong></article>
+  </div>
+  <p class="next-action"><strong>Next action:</strong> <span>Wait for approval.</span></p>
 
-<!-- PLAN: phases ordered so each one leaves the repo working. "Done when" must be checkable, not vibes. -->
-<h2>Plan</h2>
+  <table>
+    <thead><tr><th>Phase</th><th>Status</th><th>Production state after completion</th></tr></thead>
+    <tbody>
+      <tr><td>1. Phase name</td><td><span class="status planned">Planned</span></td><td>Usable because …</td></tr>
+    </tbody>
+  </table>
 
-<h3>Phase 1 — name</h3>
-<p><em>Goal:</em> one line.</p>
-<table>
-<tr><th>File</th><th>Change</th></tr>
-<tr><td><code>path/file.ext</code></td><td>…</td></tr>
-</table>
-<pre><code>// only when the shape is not obvious from a sentence — signature, type, or diff sketch. Never a full implementation.</code></pre>
-<p><strong>Done when:</strong> …</p>
+  <details>
+    <summary>Protocol for every implementation session</summary>
+    <ol>
+      <li>Read this entire HTML.</li>
+      <li>Examine the evidence for every done phase.</li>
+      <li>Compare the recorded state with the current worktree.</li>
+      <li>Select the first phase that is not done. Do not skip an active or blocked phase.</li>
+      <li>Update the dashboard and phase record before and after the work.</li>
+      <li>Keep the approved specification unchanged. Record actual results separately.</li>
+      <li>Stop for user direction when a discovery changes scope, a contract, risk, phase boundaries, or outcome.</li>
+    </ol>
+  </details>
+</section>
 
-<!-- DATA & CONTRACTS: omit entirely unless there is a schema, wire format, or stored-payload change. -->
-<h2>Data &amp; contracts</h2>
-<table>
-<tr><th>Change</th><th>Up</th><th>Down</th><th>Backfill</th></tr>
-<tr><td>…</td><td>…</td><td>…</td><td>…</td></tr>
-</table>
+<!-- Repeat only relevant impact areas. Use "No change" when absence is decision-useful. -->
+<section id="impact">
+  <p class="eyebrow">Decision context</p>
+  <h2>What changes and why it matters</h2>
+  <div class="impact-grid">
+    <article class="impact">
+      <h3>Behavior</h3>
+      <p><strong>Change:</strong> Consequence in plain language.</p>
+      <p><strong>Why it matters:</strong> User or system effect.</p>
+      <p><strong>Mechanism:</strong> Exact technical cause with evidence.</p>
+    </article>
+    <article class="impact">
+      <h3>Data and contracts <span class="no-change">No change</span></h3>
+      <p>Why this area remains unchanged.</p>
+    </article>
+  </div>
+</section>
 
-<!-- RISKS: only ones that actually bite this change, each with evidence behind it. Rollback must be genuinely reversible or say so. -->
-<h2>Risks</h2>
-<table>
-<tr><th>Risk</th><th>Impact</th><th>Mitigation</th><th>Rollback</th></tr>
-<tr><td>…</td><td>…</td><td>…</td><td>…</td></tr>
-</table>
+<section id="scope">
+  <p class="eyebrow">Boundaries</p>
+  <h2>Approved scope</h2>
+  <div class="scope-grid">
+    <article><h3>In</h3><ul><li>…</li></ul></article>
+    <article class="out"><h3>Out</h3><ul><li>…</li></ul></article>
+  </div>
+</section>
 
-<!-- VERIFICATION: exact commands. The implementer should not have to guess the test runner. -->
-<h2>Verification</h2>
-<ul>
-<li>…</li>
-</ul>
-<pre><code>test command here</code></pre>
+<!-- EXECUTION LAYER: mechanisms and repository evidence live here. -->
+<section id="change">
+  <p class="eyebrow">Current to target</p>
+  <h2>What must become true</h2>
+  <table>
+    <thead><tr><th>Result</th><th>Current</th><th>Target</th><th>What moves</th></tr></thead>
+    <tbody><tr><td>…</td><td>…</td><td>…</td><td><code>path/file.ext</code></td></tr></tbody>
+  </table>
 
-<!-- UNKNOWNS: omit if none survived. Each needs a resolution route AND a fallback. -->
-<h2>Unknowns</h2>
-<table>
-<tr><th>Unknown</th><th>How to resolve</th><th>Fallback</th></tr>
-<tr><td>…</td><td>…</td><td>…</td></tr>
-</table>
+  <details>
+    <summary>Current-state evidence</summary>
+    <table>
+      <thead><tr><th>Observed fact</th><th>Evidence</th></tr></thead>
+      <tbody><tr><td>…</td><td><code>path/file.ext:42</code> · <code>SymbolName</code></td></tr></tbody>
+    </table>
+  </details>
+</section>
 
-<!-- DO NOT: guardrails. Short, absolute, specific to this change. -->
-<h2>Do not</h2>
-<ul class="x">
-<li>…</li>
-</ul>
+<section id="decisions">
+  <p class="eyebrow">Closed decisions</p>
+  <h2>Do not relitigate</h2>
+  <table>
+    <thead><tr><th>Question</th><th>Decision</th><th>Reason</th><th>Rejected alternative</th></tr></thead>
+    <tbody><tr><td>…</td><td>…</td><td>…</td><td>… because …</td></tr></tbody>
+  </table>
+</section>
 
+<!-- Repeat the phase article. Approved content stays above its execution record. -->
+<section id="phases">
+  <p class="eyebrow">Executable plan</p>
+  <h2>Ordered production-safe phases</h2>
+  <p class="muted">Every phase leaves the repository usable. A phase can have no user-visible effect.</p>
+
+  <article class="phase" id="phase-1">
+    <div class="phase-header">
+      <div><span class="phase-number">Phase 1 of N</span><h3>Phase name</h3></div>
+      <span class="status planned">Planned</span>
+    </div>
+    <div class="phase-body">
+      <div class="phase-facts">
+        <div class="fact"><span class="label">Depends on</span><strong>None</strong></div>
+        <div class="fact"><span class="label">Visible effect</span><strong>None | …</strong></div>
+        <div class="fact"><span class="label">Risk</span><strong>Low | Medium | High</strong></div>
+        <div class="fact"><span class="label">Production</span><strong>Usable because …</strong></div>
+      </div>
+
+      <p class="plain-impact"><strong>Impact:</strong> Consequence and reason in plain language.</p>
+
+      <h4>Exact changes</h4>
+      <table class="change-list">
+        <thead><tr><th>File / symbol</th><th>Change</th></tr></thead>
+        <tbody><tr><td><code>path/file.ext</code> · <code>SymbolName</code></td><td>…</td></tr></tbody>
+      </table>
+
+      <aside class="gate">
+        <h4>Production gate</h4>
+        <ul class="checks">
+          <li>Observable acceptance criterion.</li>
+          <li>Exact verification command and expected signal.</li>
+        </ul>
+      </aside>
+
+      <div class="triptych">
+        <article><h4>Deploy</h4><p>…</p></article>
+        <article><h4>Observe</h4><p>…</p></article>
+        <article><h4>Rollback</h4><p>…</p></article>
+      </div>
+
+      <details class="execution-record">
+        <summary>Execution record · planned</summary>
+        <dl>
+          <dt>Started</dt><dd>Pending.</dd>
+          <dt>Completed</dt><dd>Pending.</dd>
+          <dt>Agent / session</dt><dd>Pending.</dd>
+          <dt>Commit / change</dt><dd>Pending.</dd>
+          <dt>Actual files</dt><dd>Pending.</dd>
+          <dt>Commands / results</dt><dd>Pending.</dd>
+          <dt>Deviations</dt><dd>None recorded.</dd>
+          <dt>New decisions</dt><dd>None recorded.</dd>
+          <dt>Remaining risks</dt><dd>…</dd>
+          <dt>Handoff</dt><dd>Exact next action.</dd>
+        </dl>
+      </details>
+    </div>
+  </article>
+</section>
+
+<!-- Omit when there is no stored or public shape change. -->
+<section>
+  <p class="eyebrow">Compatibility</p>
+  <h2>Data and contracts</h2>
+  <table>
+    <thead><tr><th>Change</th><th>Up</th><th>Compatibility</th><th>Backfill</th><th>Down</th></tr></thead>
+    <tbody><tr><td>…</td><td>…</td><td>…</td><td>…</td><td>…</td></tr></tbody>
+  </table>
+</section>
+
+<section id="risks">
+  <p class="eyebrow">Problems that can occur</p>
+  <h2>Risks and response</h2>
+  <table>
+    <thead><tr><th>Level</th><th>Risk</th><th>Signal</th><th>Response</th><th>Rollback</th></tr></thead>
+    <tbody><tr><td class="risk-med">Medium</td><td>…</td><td>…</td><td>…</td><td>…</td></tr></tbody>
+  </table>
+</section>
+
+<section id="verification">
+  <p class="eyebrow">Completion evidence</p>
+  <h2>How to verify the result</h2>
+  <div class="scope-grid">
+    <article><h3>Commands</h3><pre><code>exact test command</code></pre></article>
+    <article><h3>Acceptance criteria</h3><ul class="checks"><li>Observable result.</li><li>Manual check.</li></ul></article>
+  </div>
+</section>
+
+<!-- Omit when none remain. -->
+<section>
+  <p class="eyebrow">Unresolved</p>
+  <h2>Unknowns</h2>
+  <table>
+    <thead><tr><th>Unknown</th><th>How to resolve</th><th>Fallback</th></tr></thead>
+    <tbody><tr><td>…</td><td>…</td><td>…</td></tr></tbody>
+  </table>
+</section>
+
+<section class="guardrails">
+  <p class="eyebrow">Limits for the agent</p>
+  <h2>Do not</h2>
+  <ul><li>File, pattern, or adjacent refactor that the agent must not touch.</li></ul>
+</section>
+
+<footer>Self-contained plan · No JavaScript · No external resources · Ready for zero-context sessions</footer>
+
+</main>
 </body>
 </html>
 
 <!--
-=====================================================================
-WORKED FRAGMENT — the intended density. Do not copy the content.
-=====================================================================
+WORKED CASES — keep these properties, not the wording.
 
-<h2>Current state</h2>
-<table>
-<tr><th>Concern</th><th>Where</th><th>Today</th></tr>
-<tr><td>Session lookup</td><td><code>api/auth/session.go:88</code></td><td>Single Redis GET on <code>sess:{id}</code>, 30-min TTL, no refresh</td></tr>
-<tr><td>Tenant scoping</td><td><code>api/db/query.go:210</code></td><td>Applied in the repository layer, bypassed by 4 raw queries (grep <code>db.Raw(</code>)</td></tr>
-</table>
+NO USER-VISIBLE EFFECT:
+Phase: Enforce the existing formatter in CI.
+Visible effect: None.
+Production gate: Runtime checks pass and CI rejects one intentionally unformatted fixture.
+Production state: Application behavior is unchanged; all future changes obey the formatter.
 
-<h2>Gap</h2>
-<ul>
-<li><strong>Sessions survive a rotate</strong> — now: TTL reset only on login; after: sliding window on every authed request; moves: <code>api/auth/session.go</code>, <code>api/middleware/auth.go</code></li>
-</ul>
-
-<h2>Decisions</h2>
-<table>
-<tr><th>Question</th><th>Decision</th><th>Why / rejected</th></tr>
-<tr><td>Where does the sliding window live?</td><td>Middleware, after auth resolves</td><td>Keeps the store dumb. Rejected: inside the Redis wrapper — hides a write behind a read and breaks the read-replica split at <code>api/db/pool.go:34</code></td></tr>
-</table>
-
-<h2>Risks</h2>
-<table>
-<tr><th>Risk</th><th>Impact</th><th>Mitigation</th><th>Rollback</th></tr>
-<tr><td>Write on every request triples Redis ops</td><td>Latency at p99, cost</td><td>Only refresh when remaining TTL &lt; 50%</td><td>Env flag <code>SESSION_SLIDING=0</code>, no data migration to undo</td></tr>
-</table>
-
-Note the density: every claim has a path, every rejection has a reason, no sentence
-exists to introduce another sentence.
-
----------------------------------------------------------------------
-DIAGRAMS — optional. Only when topology or time is the point. ASCII in
-<pre>, never load-bearing, always inside the section it explains.
----------------------------------------------------------------------
-
-Expand/contract migration — several states coexist, prose handles this badly:
-
-<pre>
- T0  old code      read col_a   write col_a
- T1  add col_b, backfill                        &lt;- migration 0042, ~40s lock-free
- T2  both deployed read col_a   write col_a+col_b   &lt;- rolling window, ~15 min
- T3  new code      read col_b   write col_b
- T4  drop col_a                                 &lt;- migration 0043, separate release
-</pre>
-
-Blast radius — four+ components, non-linear edges:
-
-<pre>
- handler.go:88 ──► service.Sync() ──┬──► db users        (tx)
-                                    ├──► queue profile.changed
-                                    │       └──► worker/profile.go:31 ──► cache DEL sess:*
-                                    └──► search index    (async, best-effort)
-</pre>
-
-What NOT to draw — this adds nothing over an ordered list:
-
-<pre>
- step 1 ──► step 2 ──► step 3
-</pre>
+RECORDED DEVIATION:
+Approved: Run the formatter directly from the CI workflow.
+Actual: CI calls the existing Make target because it also configures generated-file exclusions.
+Evidence: CI run 1842 passed; commit abc1234.
+Decision: This factual implementation detail does not change scope, contract, risk, or outcome.
+Handoff: Phase 2 starts from abc1234. Runtime behavior is unchanged.
 -->
