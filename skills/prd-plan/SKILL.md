@@ -1,13 +1,15 @@
 ---
 name: prd-plan
-description: Iterative PRD workflow that replaces plan mode. Investigates the real codebase, closes consequential decisions with the user, and emits one self-contained HTML plan for approval and zero-context implementation sessions. Use this whenever the user wants to plan, scope, spec, or think through a code change before anything is written — including "plan this", "spec this out", "PRD", "how would we build X", "what would it take to", "what breaks if we", "before you code", or any feature, refactor, migration, or architectural request that is not a one-line fix. Prefer this over replying with an inline or markdown plan.
+description: Iterative PRD workflow that replaces plan mode. Investigates the real codebase, closes consequential decisions with the user, and emits one visual, self-contained HTML decision plan for approval and zero-context implementation sessions. Use this whenever the user wants to plan, scope, spec, or think through a code change before anything is written — including "plan this", "spec this out", "PRD", "how would we build X", "what would it take to", "what breaks if we", "before you code", or any feature, refactor, migration, or architectural request that is not a one-line fix. Prefer this over replying with an inline or markdown plan.
 ---
 
 # PRD Plan
 
 Plan mode fails when it guesses from the request and leaves the implementation agent to verify everything again. This skill derives the plan from the code and closes decisions with the user.
 
-The HTML has two equal readers. The user uses it to understand impact and approve the approach. Implementation agents use it to execute the work across sessions with no prior context.
+The HTML has two equal readers. The user uses it as a decision interface: compare credible paths, understand the price, and approve, reduce, investigate, or stop. Implementation agents use it as an execution contract across sessions with no prior context.
+
+The document is not a transcript or a storage container. Its first screen must answer: **what decision is requested, what is recommended, why, what it costs, how reversible it is, and what happens next**. The rest must let an implementation agent act without redoing discovery.
 
 Explain the consequence before the mechanism. Use programming concepts that transfer across languages. Keep exact paths, symbols, contracts, and commands for the implementation agent. Define a repository-specific term when the decision depends on it. Do not teach basic syntax.
 
@@ -18,6 +20,7 @@ Explain the consequence before the mechanism. Use programming concepts that tran
 3. **No plan before convergence.** Emit the HTML only after all questions that change its content are closed.
 4. **Surface cost early.** The moment recon shows the request is materially bigger than it looks, stop and say it — before asking anything else, with the evidence and with cheaper alternatives if any exist. The user's whole reason for using this is to decide with the real price on the table.
 5. **Go to the point.** No preambles, praise, hedging, or request restatement. Give facts, paths, consequences, and tradeoffs.
+6. **Visuals carry meaning.** Use visual hierarchy, comparison, and diagrams to reduce decision effort, not to decorate the document. Never invent precision, hide a caveat, or make a visual the only source of an implementation fact.
 
 ## Phase 0 — Size the request
 
@@ -76,7 +79,7 @@ Record every closed decision along with the rejected alternative and the reason.
 
 ## Phase 5 — Converge
 
-Loop Phases 1–4 until all questions that change the plan are closed. Then show the user the tier, ordered phases, main risks, and genuine unknowns. Recommend whether to proceed, reduce scope, do more discovery, or stop. Give the reason. Get the go-ahead.
+Loop Phases 1–4 until all questions that change the plan are closed. Then show the user the tier, ordered phases, main risks, and genuine unknowns. Recommend whether to proceed, reduce scope, do more discovery, or stop. Give the reason. Get the go-ahead to generate the approval document; the HTML contains the final decision request.
 
 ### Build release-safe phases
 
@@ -136,15 +139,19 @@ The user reads the rendered file. Implementation agents read the whole raw file,
 
 Put these items first:
 
-- Outcome and recommendation with its reason.
-- Main cost or tradeoff.
+- The exact decision requested: approve, choose an option, reduce scope, fund discovery, or stop.
+- Outcome and recommendation with its reason and confidence level.
+- The main cost, tradeoff, reversibility, and what could change the recommendation.
 - Execution status and next action.
 - Impact by relevant area: behavior, code, data and contracts, operations, and developer workflow.
 - Scope, main risks, and an ordered map of phases.
+- Credible alternatives when they exist. Compare outcome, effort, risk, reversibility, and the condition under which each becomes the better choice. Do not manufacture alternatives to fill a layout.
 
 The execution dashboard must show document status, completed phase count, active or blocked phase, open decisions, last update, and exact next action.
 
 Write impact as consequence, reason, then technical mechanism. State `No change` for an area when that absence helps the user assess the request.
+
+Use relative estimates such as `small`, `medium`, and `large` when the repository supports only relative confidence. Use dates, durations, file counts, or percentages only when evidence supports them; a polished chart does not justify false precision.
 
 ### Execution layer
 
@@ -169,18 +176,41 @@ Do not use a global word limit. Keep the decision layer brief enough to scan bef
 
 Use tables for structured facts and prose for reasoning. Use code blocks only when a signature, type, command, or short diff sketch communicates the shape better. Never include a full implementation.
 
+Progressively disclose by purpose, not by hiding important information. The recommendation, material caveats, active blockers, production gates, and next action stay visible. Put supporting evidence, rejected alternatives, and execution history in `<details>` when useful.
+
+### Visual decision support
+
+Choose a visual only when it makes a relationship faster to understand than prose or a small table:
+
+- **Option comparison** for two or more credible paths with different cost, risk, or reversibility.
+- **System or data-flow map** for three or more components, ownership seams, or a non-obvious blast radius.
+- **Timeline or state transition** for migrations, rolling compatibility, queues, backfills, and rollback windows.
+- **Dependency roadmap** when phase order or safe release boundaries are not obvious.
+- **Before/after model** when the decision depends on a structural change that a diff table does not make clear.
+
+For an M or L plan, expect at least one decision-useful visual when the change has multiple options, three or more interacting parts, or a stateful rollout. For an S plan, a strong hierarchy and compact comparison are usually enough. Omit a visual when it only repeats adjacent text.
+
+Use semantic HTML and CSS for cards, matrices, timelines, and progress. Use inline SVG for bespoke topology, branching, and relationship diagrams. Every diagram must:
+
+- Live in a `<figure>` with a decision-oriented `<figcaption>`.
+- Have a meaningful SVG `<title>` and `<desc>`, visible labels, a declared direction, and a readable DOM order.
+- Use text, shape, or line pattern in addition to color. Include a legend only when its encoding is not obvious.
+- Link or point to the canonical evidence or phase details instead of duplicating them.
+- Remain legible on a narrow screen, in dark mode, in print, and in the raw HTML an agent reads.
+
+Motion is optional. Use CSS-only animation or transition only to communicate flow, active state, or a meaningful before/after relationship. Keep the static state complete, make motion subtle and finite, and disable it for `prefers-reduced-motion` and print. Never use motion to attract attention to decoration.
+
+Do not use stock art, decorative icons, generic architecture clouds, gauges without a defensible scale, or charts whose data is not in the plan. A beautiful unsupported visualization is misinformation.
+
 ### File constraints
 
 - Use one `<style>` block from the template. Do not use inline styles.
 - Use semantic HTML and a small stable class vocabulary from the template.
-- Use no JavaScript, event handlers, external resources, web fonts, images, CDN assets, or Mermaid.
+- Use no JavaScript, event handlers, external resources, web fonts, CDN assets, or Mermaid.
+- Keep the deliverable to one HTML file. Any image must be accessible inline SVG; never create a companion image, embed raster/base64 data, or depend on a renderer.
 - Make the file work offline, on narrow screens, in dark mode, and when printed.
 - Use text labels in addition to color. Do not make information depend only on presentation.
 - Use `<details>` only for secondary evidence, rejected alternatives, or bounded history. Keep decisions, active status, production gates, and next actions visible.
-
-### Diagrams
-
-Diagrams are optional and never load-bearing. Use ASCII inside `<pre>` when topology or time is harder to understand in prose. Skip linear sequences and any diagram that repeats a table. Inline SVG is permitted only when crossing edges make ASCII unreadable and the SVG remains small.
 
 Read `references/plan-template.html` when you reach Phase 6. It contains the exact style block, structure, and field guidance. Strip all HTML comments from generated plans.
 
