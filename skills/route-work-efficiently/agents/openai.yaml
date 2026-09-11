@@ -1,0 +1,4 @@
+interface:
+  display_name: "Efficient Work with Agents"
+  short_description: "Reduce context and delegate routine work thoughtfully"
+  default_prompt: "Use $route-work-efficiently to complete this task with the minimum necessary context and cost while maintaining quality."
